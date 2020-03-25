@@ -1,0 +1,103 @@
+{
+    "[javascript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "breadcrumbs.enabled": true,
+    "debug.node.autoAttach": "on",
+    "diffEditor.renderSideBySide": false,
+    "editor.formatOnSave": true,
+    "editor.hover.delay": 500,
+    "editor.lineNumbers": "relative",
+    "editor.minimap.enabled": false,
+    "editor.wordWrap": "on",
+    "explorer.autoReveal": false,
+    "explorer.openEditors.visible": 0,
+    "extension.prophet.clean.on.start": false,
+    "extension.prophet.upload.enabled": true,
+    "files.hotExit": "onExitAndWindowClose",
+    "FSharp.enableTouchBar": false,
+    "FSharp.externalAutocomplete": true,
+    "FSharp.fsacRuntime": "netcore",
+    "FSharp.fsiExtraParameters": [
+        "fsi"
+    ],
+    "FSharp.fsiFilePath": "/usr/local/share/dotnet/dotnet",
+    "FSharp.smartIndent": true,
+    "FSharp.useSdkScripts": true,
+    "gitlens.codeLens.enabled": false,
+    "gitlens.currentLine.enabled": false,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.hovers.enabled": false,
+    "gitlens.statusBar.enabled": false,
+    "html.format.wrapLineLength": 0,
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "problems.autoReveal": false,
+    "rust-analyzer.highlighting.semanticTokens": true,
+    "rust-analyzer.serverPath": "~/.config/coc/extensions/coc-rust-analyzer-data/rust-analyzer",
+    "salesforcedx-vscode-core.telemetry.enabled": false,
+    "search.quickOpen.includeHistory": false,
+    "search.searchOnType": false,
+    "search.showLineNumbers": true,
+    "telemetry.enableCrashReporter": false,
+    "telemetry.enableTelemetry": false,
+    "terminal.integrated.rendererType": "dom",
+    "vim.hlsearch": true,
+    "vim.leader": "<space>",
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "after": [],
+            "before": [
+                "<leader>",
+                "<leader>"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.files.saveAll"
+                }
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<leader>",
+                "Z"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.evenEditorWidths"
+                }
+            ]
+        },
+        {
+            "after": [],
+            "before": [
+                "<leader>",
+                "z"
+            ],
+            "commands": [
+                {
+                    "command": "workbench.action.maximizeEditor"
+                }
+            ]
+        }
+    ],
+    "vim.statusBarColorControl": true,
+    "vim.useSystemClipboard": true,
+    "window.openWithoutArgumentsInNewWindow": "on",
+    "window.restoreWindows": "none",
+    "window.zoomLevel": 1,
+    "workbench.activityBar.visible": true,
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#005f5f",
+        "statusBar.noFolderBackground": "#005f5f",
+        "statusBar.debuggingBackground": "#005f5f"
+    },
+    "workbench.editor.enablePreview": false,
+    "workbench.editor.enablePreviewFromQuickOpen": false,
+    "workbench.sideBar.location": "right",
+    "workbench.startupEditor": "none",
+    "rust-analyzer.highlightingOn": true,
+    "debug.allowBreakpointsEverywhere": true,
+    "editor.codeLens": false,
+    "salesforcedx-vscode-apex.java.home": "",
+}

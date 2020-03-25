@@ -1,0 +1,10 @@
+tags
+npm/.npm-global/*
+!npm/.npm-global/.gitkeep
+.i3log*
+.stowrc
+
+weechat/.config/weechat/weechat.log
+weechat/.config/weechat/logs
+
+.DS_Store

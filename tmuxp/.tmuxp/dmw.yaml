@@ -1,0 +1,31 @@
+session_name: dmw
+windows:
+  - window_name: vim
+    panes:
+      - shell_command:
+        - clear
+        - cd ~/Documents/dmw/cartridges
+        - clear
+  - window_name: grunt
+    options:
+      main-pane-width: 100
+    layout: main-vertical
+    panes:
+      - shell_command:
+        - clear
+        - cd ~/Documents/dmw/cartridges
+        - clear
+      - shell_command:
+        - clear
+        - cd ~/Documents/dmw/cartridges
+        - clear
+      - shell_command:
+        - clear
+        - cd ~/Documents/dmw/cartridges
+        - clear
+  - window_name: svn
+    panes:
+      - shell_command:
+        - clear
+        - cd ~/Documents/dmw
+        - clear
