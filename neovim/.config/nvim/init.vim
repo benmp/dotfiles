@@ -67,6 +67,7 @@ Plug 'mbbill/undotree'
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " nicer status bar
+let g:airline_theme='gruvbox'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 let g:airline_powerline_fonts = 1
@@ -199,8 +200,10 @@ augroup end
 " allows for coloring based on syntax words
 syntax on
 
-let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" allow colors to work inside tmux
 set termguicolors
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set background=dark " tells VIM colorscheme has dark background
 
 let g:gruvbox_italic=1
@@ -218,11 +221,6 @@ set showbreak=↪\
 set showmatch " highlights matching {([
 set matchtime=3 "300ms to show paren match
 
-" allow colors to work inside tmux
-if &term =~# '^screen'
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-endif
 
 set ttyfast " faster redrawing
 set lazyredraw " dont redraw during macro

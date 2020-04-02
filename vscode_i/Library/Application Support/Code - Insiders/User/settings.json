@@ -100,4 +100,5 @@
     "debug.allowBreakpointsEverywhere": true,
     "editor.codeLens": false,
     "salesforcedx-vscode-apex.java.home": "",
+    "workbench.colorTheme": "Gruvbox Dark Hard",
 }
