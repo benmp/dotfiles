@@ -25,22 +25,6 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-" completion framework
-"let g:coc_global_extensions = [
-"\ 'coc-fsharp',
-"\ 'coc-json',
-"\ 'coc-pairs',
-"\ 'coc-rust-analyzer',
-"\ 'coc-syntax',
-"\ 'coc-tsserver'
-"\ ]
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-"close coc watchers on exit
-" augroup onclose
-"   autocmd VimLeave * :!watchman watch-del-all
-" augroup END
-
 " fuzzy file/line/text searching, use leading ' (single quote) to do exact searches
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
@@ -89,6 +73,13 @@ Plug 'tpope/vim-commentary'
 
 "work demandware syntax stuffs
 Plug 'clavery/vim-dwre'
+
+" git stuffs
+Plug 'tpope/vim-fugitive'
+" Delete Fugitive buffers when I leave them so they don't pollute BufExplorer
+augroup FugitiveCustom
+    autocmd BufReadPost fugitive://* set bufhidden=delete
+augroup END
 
 " tons of language syntax plugins
 "let g:polyglot_disabled = ['fsharp', 'javascript', 'typescript', 'dsscript']
@@ -209,6 +200,10 @@ set background=dark " tells VIM colorscheme has dark background
 let g:gruvbox_italic=1
 let g:gruvbox_contrast_dark='hard'
 colorscheme gruvbox
+
+" transparency
+hi! Normal ctermbg=NONE guibg=NONE
+hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
 
 "use a taller pipe and slash symbol
 set fillchars=vert:│,stl:\ ,stlnc:\
@@ -599,14 +594,14 @@ command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <leader>z :ZoomToggle<CR>
 
 " better vimdiff viewing
-set diffopt+=iwhite
-if has("patch-8.1.0360")
-    set diffopt+=internal,algorithm:patience
-endif
-set diffexpr=DiffW()
-function DiffW()
-   let opt = "" . "-w " " swapped vim's -b with -w
-   silent execute "!diff -a --binary " . opt .
-     \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
-endfunction
+" set diffopt+=iwhite
+" if has("patch-8.1.0360")
+"     set diffopt+=internal,algorithm:patience
+" endif
+" set diffexpr=DiffW()
+" function DiffW()
+"    let opt = "" . "-w " " swapped vim's -b with -w
+"    silent execute "!diff -a --binary " . opt .
+"      \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
+" endfunction
 
