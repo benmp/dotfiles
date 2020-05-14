@@ -5,7 +5,6 @@
     "breadcrumbs.enabled": true,
     "debug.node.autoAttach": "on",
     "diffEditor.renderSideBySide": false,
-    "editor.formatOnSave": true,
     "editor.hover.delay": 500,
     "editor.lineNumbers": "relative",
     "editor.minimap.enabled": false,
