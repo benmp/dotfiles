@@ -82,15 +82,9 @@ augroup FugitiveCustom
 augroup END
 
 " tons of language syntax plugins
-"let g:polyglot_disabled = ['fsharp', 'javascript', 'typescript', 'dsscript']
 Plug 'sheerun/vim-polyglot'
 
 Plug 'tpope/vim-repeat'
-
-" set cwd automatically, super useful for fzf and the like
-"Plug 'airblade/vim-rooter'
-""let g:rooter_patterns = ['.rooter', '.ignore', 'package.json', '.git', '.git/', '_darcs/', '.hg/', 'bzr/', '.svn/']
-"let g:rooter_patterns = ['.rooter']
 
 Plug 'tpope/vim-surround'
 
@@ -265,32 +259,20 @@ inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : pumvisible
 " close preview window when completion done
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
-" Remap keys for gotos
-" Remap keys for gotos
-" nmap <silent> gl  :<C-u>CocList diagnostics<cr>
-" nmap <silent> [g <Plug>(coc-diagnostic-prev)
-" nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
-
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-" function! s:show_documentation()
-"   if &filetype == 'vim'
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    execute 'h '.expand('<cword>')
+    " call CocAction('doHover')
+  endif
+endfunction
 
 " Highlight symbol under cursor on CursorHold
 " autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" nmap <F2> <Plug>(coc-rename)
 
 " ============================================================================
 " SEARCHING

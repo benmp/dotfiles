@@ -32,8 +32,6 @@
     "javascript.updateImportsOnFileMove.enabled": "always",
     "problems.autoReveal": false,
     "rust-analyzer.highlighting.semanticTokens": true,
-    "rust-analyzer.serverPath": "~/.config/coc/extensions/coc-rust-analyzer-data/rust-analyzer",
-    "salesforcedx-vscode-core.telemetry.enabled": false,
     "search.quickOpen.includeHistory": false,
     "search.searchOnType": false,
     "search.showLineNumbers": true,
@@ -98,6 +96,6 @@
     "rust-analyzer.highlightingOn": true,
     "debug.allowBreakpointsEverywhere": true,
     "editor.codeLens": false,
-    "salesforcedx-vscode-apex.java.home": "",
     "workbench.colorTheme": "Gruvbox Dark Hard",
+    "editor.fontFamily": "Hack Nerd Font",
 }
