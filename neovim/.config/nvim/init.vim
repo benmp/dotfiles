@@ -25,6 +25,10 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'editorconfig/editorconfig-vim'
+
 " fuzzy file/line/text searching, use leading ' (single quote) to do exact searches
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
@@ -40,8 +44,16 @@ nnoremap - :NERDTreeToggle<CR>
 " color theme
 Plug 'gruvbox-community/gruvbox'
 
+" :GV git viewer
+Plug 'junegunn/gv.vim'
+
 " turns mouse on, focus, cursor shape, and paste support for terminal mode
 Plug 'wincent/terminus'
+
+Plug 'nvim-treesitter/nvim-treesitter'
+" TODO autocmd to run this on startup?
+" :TSInstall all
+" :TSUpdate
 
 " visual undo tree
 let g:undotree_SetFocusWhenToggle = 1
@@ -67,32 +79,33 @@ function! DeleteBuffer()
         Bwipeout
     endif
 endfunction
-nnoremap <leader>bd :call DeleteBuffer()<CR>
+nnoremap <leader>d :call DeleteBuffer()<CR>
 
+" gc helper
 Plug 'tpope/vim-commentary'
 
 "work demandware syntax stuffs
 Plug 'clavery/vim-dwre'
 
-" git stuffs
+" :Git command
 Plug 'tpope/vim-fugitive'
 " Delete Fugitive buffers when I leave them so they don't pollute BufExplorer
 augroup FugitiveCustom
+    autocmd!
     autocmd BufReadPost fugitive://* set bufhidden=delete
 augroup END
 
-" tons of language syntax plugins
-Plug 'sheerun/vim-polyglot'
-
+" repeat extra stuff with .
 Plug 'tpope/vim-repeat'
 
+" csiw '
 Plug 'tpope/vim-surround'
 
 " allow ctrl+jkl; to navigate both vim and tmux together
 let g:tmux_navigator_save_on_switch = 1
 Plug 'christoomey/vim-tmux-navigator'
 
-" Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired'
 
 " allow <leader>ww to mark and swap windows
 let g:windowswap_map_keys = 0 "prevent default bindings
@@ -177,7 +190,7 @@ augroup netrw_buf_hidden_fix
         \|     set bufhidden=hide " let buffers move out of focus without annoying warning to save
         \| endif
 
-augroup end
+augroup END
 
 " ============================================================================
 " TEXT DISPLAY AND COLORS
@@ -210,6 +223,7 @@ set showbreak=↪\
 set showmatch " highlights matching {([
 set matchtime=3 "300ms to show paren match
 
+set cursorline " show horizontal highlight on active line
 
 set ttyfast " faster redrawing
 set lazyredraw " dont redraw during macro
@@ -228,7 +242,7 @@ set nowrap
 " COMPLETION
 " ============================================================================
 set complete-=i                                            " do not scan included files, .tags is more performant
-set completeopt+=noinsert,menuone,noselect                 " Autocomplete behavior, always show menu, don't
+set completeopt=noinsert,menuone,noselect                  " Autocomplete behavior, always show menu, don't
 set infercase                                              " case sensitive ins-completion when uppercase present
 set pumheight=10                                           " limit popup result height
 set wildignore+=*swp,*.class,*.pyc,*.png,*.jpg,*.gif,*.zip " ignore these files
@@ -240,11 +254,11 @@ filetype plugin indent on " turn on filetype analysis allows file specific plugi
 
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-" inoremap <silent><expr> <TAB>
-"       \ pumvisible() ? "\<C-n>" :
-"       \ <SID>check_back_space() ? "\<TAB>" :
-"       \ coc#refresh()
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 function! s:check_back_space() abort
   let col = col('.') - 1
@@ -258,21 +272,6 @@ inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : pumvisible
 
 " close preview window when completion done
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
-
-" Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    execute 'h '.expand('<cword>')
-    " call CocAction('doHover')
-  endif
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-" autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " ============================================================================
 " SEARCHING
@@ -376,8 +375,8 @@ set sidescrolloff=20
 nnoremap <leader>b :Buffers<CR>
 
 " fuzzy search file names using current working directory (:PWD)
-nnoremap <leader>f :Files<CR>
-nnoremap <leader>F :Files!<CR>
+nnoremap <leader>f :Files!<CR>
+nnoremap <leader>F :Files<CR>
 
 " fuzzy search file names using home directory
 nnoremap <leader>r :FilesRoot<CR>
@@ -418,8 +417,6 @@ augroup termIgnore
     " always make quickfix window be on the bottom
     au FileType qf wincmd J
 augroup END
-nnoremap <C-n> :bn<CR>
-nnoremap <C-p> :bp<CR>
 
 " ============================================================================
 " REMAPS - EDITING AND NAVIGATION
@@ -516,10 +513,10 @@ command! -bang -nargs=* FuzzyRg
 " uses $PWD as 
 " --info=inline 27/500 displays on first line
 " --layout-reverse (top to bottom display)
-" --preview uses bat command for color
+" --fzf#vim#with_preview uses bat command for color
 " --tiebreak=end to favor matches towards end of file path
 command! -bang -nargs=? -complete=dir Files
-      \ call fzf#vim#files(<q-args>, {'options': ['--tiebreak=end', '--layout=reverse', '--info=inline', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
+      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': '--tiebreak=end --layout=reverse --info=inline --height=100%'}, 'up:60%'), <bang>0)
 
 " uses '~' as base directory for searching
 " --info=inline 27/500 displays on first line
@@ -528,37 +525,6 @@ command! -bang -nargs=? -complete=dir Files
 " --tiebreak=end to favor matches towards end of file path
 command! -bang -nargs=? FilesRoot
       \ call fzf#vim#files('~', {'options': ['--tiebreak=end', '--layout=reverse', '--info=inline', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
-
-" this will work in nvim instead of wordmotion https://github.com/neovim/neovim/pull/6235
-" make behaviour of cw consistent with dw, yw, et al
-if !has('nvim')
-  function! WordMotion()
-    let l:before = line('.')
-    execute 'normal! v'.v:count1.'w'
-
-    " when the cursor wraps, we must check whether it went too far
-    if line('.') != l:before
-      " try backing up to the end of the previous word
-      " and then see if we stay on the same line
-      let l:target = winsaveview()
-      let l:before = line('.')
-      exe 'normal! ge'
-      if line('.') != l:before
-        " we are now at the end of the word at the end of previous line,
-        " which is exactly where we want to be
-        return
-      else
-        " we were (almost) in the right place, so go back there
-        call winrestview(l:target)
-      endif
-    endif
-
-    " visual selections are inclusive; to avoid erasing the first char
-    " of the following word, we must back off one column
-    execute 'normal! h'
-  endfunction
-  onoremap w :call WordMotion()<CR>
-endif
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
@@ -575,15 +541,14 @@ endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <leader>z :ZoomToggle<CR>
 
-" better vimdiff viewing
-" set diffopt+=iwhite
-" if has("patch-8.1.0360")
-"     set diffopt+=internal,algorithm:patience
-" endif
-" set diffexpr=DiffW()
-" function DiffW()
-"    let opt = "" . "-w " " swapped vim's -b with -w
-"    silent execute "!diff -a --binary " . opt .
-"      \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
-" endfunction
+" ============================================================================
+" LSP
+" ============================================================================
 
+lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+    highlight = {
+      enable = true
+    }
+  }
+EOF

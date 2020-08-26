@@ -98,4 +98,10 @@
     "editor.codeLens": false,
     "workbench.colorTheme": "Gruvbox Dark Hard",
     "editor.fontFamily": "Hack Nerd Font",
+    "extension.prophet.ignore.list": [
+        "client", 
+        "node_modules",
+        "\\.git",
+        "\\.zip$"
+    ],
 }
