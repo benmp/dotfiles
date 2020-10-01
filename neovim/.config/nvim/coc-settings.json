@@ -5,6 +5,7 @@
   "coc.source.file.enable": true,
   "coc.source.around.enable": true,
   "coc.source.buffer.enable": true,
-  "suggest.noselect": false,
-  "codeLens.enable": true
+  "codeLens.enable": true,
+  "javascript.format.enabled": false,
+  "suggest.noselect": false
 }

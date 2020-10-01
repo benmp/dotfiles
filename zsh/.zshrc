@@ -126,16 +126,23 @@ zstyle ':completion:*' special-dirs false
 fignore=(DS_Store $fignore)
 
 #keep less output on terminal after completion
-export LESS=-iXFR
+#-i smart case search
+#-R color escaping
+#-F quit less if it fits on screen
+#-X don't clear screen
+export LESS=-iRFX
 
 # fzf
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-if [ -x "$(command -v rg)" ]; then
- export FZF_DEFAULT_COMMAND='rg --hidden --no-messages --files --smart-case --follow --glob "!{.git,node_modules,.svn,.sass-cache,target}" '
+if [ -x "$(command -v fd)" ]; then
+ export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+ # show preview with color, and first 500 lines (scrollable), ? toggles preview
+ export FZF_CTRL_T_OPTS="--preview 'bat --color=always --line-range :500 {}'"
 fi
-# default command grows down, takes 40% of terminal, and previews 100 lines from inside file
-export FZF_DEFAULT_OPTS='--inline-info --tiebreak=end --layout=reverse --height 40%'
+# default --info=inline shows 50/500 on first line instead of new line, --tiebreak=end prefers matching at end, --reverse makes command grow down, border adds border
+export FZF_DEFAULT_OPTS='--info=inline --tiebreak=end --reverse --border'
 
 #exports
 export VISUAL=nvim
@@ -148,9 +155,19 @@ pathprepend() {
   fi
 }
 
+pythonpathmac() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    MYFILES=`ls -F $HOME/Library/Python | grep "\/" `
+    for FOLDER in $MYFILES; do
+      pathprepend $HOME/Library/Python/$FOLDER\bin
+    done
+  fi
+}
+
 pathprepend $HOME/.cargo/bin
 pathprepend /usr/local/bin
 pathprepend /usr/local/sbin
+pythonpathmac
 
 # nodejs n to manage environments
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).

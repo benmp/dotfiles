@@ -5,14 +5,14 @@ set nocompatible
 
 map <space> <leader>
 
-""" General reminders
-""" - Shortcuts
-"""   - ctrl<C> and alt<A> shortcuts cannot be case sensitive (ctrl-f and ctrl-F are the same)
-"""   - only plain shift key shortcut (also with leader) can be case sensitive (ie f and F, or <leader>f and <leader>F )
-""" - Augroups
-"""   - augroups namespace autocommands together, autocmd! clears all commands in the namespace first
-"""   - remaps using FileType and <buffer> will only be active for that given buffer and FileType
-"""   - all other remaps apply to all filetypes and buffers
+" General reminders
+" - Shortcuts
+"   - ctrl<C> and alt<A> shortcuts cannot be case sensitive (<C-f> and <C-F> are the same)
+"   - only plain shift key shortcut (also with leader) can be case sensitive (ie f and F, or <leader>f and <leader>F )
+" - Augroups
+"   - augroups namespace autocommands together, autocmd! clears all commands in the namespace first
+"   - remaps using FileType and <buffer> will only be active for that given buffer and FileType
+"   - all other remaps apply to all filetypes and buffers
 
 " ============================================================================
 " VIM-PLUG
@@ -25,21 +25,20 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
+" sweet syntax highlighting
+Plug 'nvim-treesitter/nvim-treesitter'
+" TODO autocmd to run this on startup?
+" :TSInstall all
+" :TSUpdate
+
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
 Plug 'editorconfig/editorconfig-vim'
 
 " fuzzy file/line/text searching, use leading ' (single quote) to do exact searches
+let g:fzf_preview_window='up:60%'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-
-" project explorer because netrw sucks
-let g:NERDTreeQuitOnOpen=3
-let g:NERDTreeShowHidden=1
-let g:NERDTreeMinimalUI=0
-let g:NERDTreeWinSize=50
-Plug 'scrooloose/nerdtree'
-nnoremap - :NERDTreeToggle<CR>
 
 " color theme
 Plug 'gruvbox-community/gruvbox'
@@ -47,13 +46,13 @@ Plug 'gruvbox-community/gruvbox'
 " :GV git viewer
 Plug 'junegunn/gv.vim'
 
+Plug 'kevinhwang91/rnvimr'
+let g:rnvimr_enable_ex = 1
+let g:rnvimr_enable_bw = 1
+let g:rnvimr_enable_picker = 1
+
 " turns mouse on, focus, cursor shape, and paste support for terminal mode
 Plug 'wincent/terminus'
-
-Plug 'nvim-treesitter/nvim-treesitter'
-" TODO autocmd to run this on startup?
-" :TSInstall all
-" :TSUpdate
 
 " visual undo tree
 let g:undotree_SetFocusWhenToggle = 1
@@ -63,9 +62,8 @@ Plug 'mbbill/undotree'
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " nicer status bar
-let g:airline_theme='gruvbox'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+" let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#fnamecollapse = 0
 let g:airline_powerline_fonts = 1
 let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#' " show full filepaths
 Plug 'vim-airline/vim-airline'
@@ -74,7 +72,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'moll/vim-bbye'
 function! DeleteBuffer()
     if &buftype ==# 'terminal'
-        bwipeout!
+        Bwipeout!
     else
         Bwipeout
     endif
@@ -84,16 +82,11 @@ nnoremap <leader>d :call DeleteBuffer()<CR>
 " gc helper
 Plug 'tpope/vim-commentary'
 
-"work demandware syntax stuffs
+" demandware syntax
 Plug 'clavery/vim-dwre'
 
 " :Git command
 Plug 'tpope/vim-fugitive'
-" Delete Fugitive buffers when I leave them so they don't pollute BufExplorer
-augroup FugitiveCustom
-    autocmd!
-    autocmd BufReadPost fugitive://* set bufhidden=delete
-augroup END
 
 " repeat extra stuff with .
 Plug 'tpope/vim-repeat'
@@ -118,12 +111,15 @@ call plug#end()
 " GENERAL VIM SETTINGS
 " ============================================================================
 " let vim overwrite/use system clipboard
-if has("clipboard") " yank to clipboard
-  set clipboard=unnamed " copy to the system clipboard
-  if has("unnamedplus") " X11 support
-    set clipboard+=unnamedplus
-  endif
-endif
+" if has("clipboard") " yank to clipboard
+"   set clipboard=unnamed " copy to the system clipboard
+"   if has("unnamedplus") " X11 support
+"     set clipboard+=unnamedplus
+"   endif
+" endif
+" this is way faster, unnamed started causing crazy lag on dd
+vnoremap y "+y
+nnoremap y "+y
 
 set history=10000          " undo history to x items
 
@@ -136,7 +132,7 @@ endif
 set shortmess=I           " don't show startup message, shorten prompt on long messages to avoid Enter
 set cmdheight=2
 set updatetime=300         " time until swap file writes, additionally how long until CursorHold fires
-set signcolumn=yes         " always show column to left of line number
+set signcolumn=no         " never show column to left of line number
 
 set timeoutlen=1000        " wait 1000 ms for mapping delay
 set ttimeoutlen=10         " wait 10 ms for keycodes
@@ -145,9 +141,13 @@ set nrformats-=octal       " treat leading 007 as not octal numbers for incremen
 
 set viminfo+=!             " persist upper case variables and marks 'A to viminfo
 
+set inccommand=nosplit     " :s/ will show changes live in buffer
+
 " ============================================================================
 " WINDOW
 " ============================================================================
+set title             " change window title to always show full file path
+
 set display+=lastline " always show whole last line in document instead of @ symbol
 
 set laststatus=2      " window always has status line
@@ -168,11 +168,11 @@ endif
 set splitbelow        " default vertical splits to be down
 set splitright        " default horizontal splits to be right
 
-" open all :h in new tab, allow tab to close with esc
+" open all :h in new tab, allow tab to close with q
 function! s:helptab()
   if &buftype == 'help'
     wincmd T
-    nnoremap <buffer> q :q<cr>
+    nnoremap <buffer> q :q<CR>
   endif
 endfunction
 augroup help_tab
@@ -180,17 +180,8 @@ augroup help_tab
   autocmd BufEnter *.txt call s:helptab()
 augroup END
 
-" Set all non-netrw buffers to bufhidden=hide
-set nohidden
-augroup netrw_buf_hidden_fix
-  autocmd!
-
-  autocmd BufWinEnter *
-        \  if &ft != 'netrw'
-        \|     set bufhidden=hide " let buffers move out of focus without annoying warning to save
-        \| endif
-
-augroup END
+" Set all buffers to hide whether dirty or not (don't require saving to switch buffers)
+set hidden
 
 " ============================================================================
 " TEXT DISPLAY AND COLORS
@@ -199,9 +190,9 @@ augroup END
 syntax on
 
 " allow colors to work inside tmux
-set termguicolors
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
 set background=dark " tells VIM colorscheme has dark background
 
 let g:gruvbox_italic=1
@@ -223,7 +214,12 @@ set showbreak=↪\
 set showmatch " highlights matching {([
 set matchtime=3 "300ms to show paren match
 
-set cursorline " show horizontal highlight on active line
+" show horizontal highlight on active line in active window
+augroup CursorLineOnlyInActiveWindow
+  autocmd!
+  autocmd VimEnter,WinEnter,BufWinEnter * setlocal cursorline
+  autocmd WinLeave * setlocal nocursorline
+augroup END
 
 set ttyfast " faster redrawing
 set lazyredraw " dont redraw during macro
@@ -237,6 +233,8 @@ set nowrap
 "   set breakindent
 "   set breakindentopt=sbr
 " endif
+
+set diffopt=filler,internal,algorithm:histogram,indent-heuristic
 
 " ============================================================================
 " COMPLETION
@@ -265,10 +263,10 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" <cr> selects currently selected item
-" <cr> also selects first item in dropdown if none are selected
-" otherwise <cr> simply acts like <cr> and adds a carriage return
-inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : pumvisible() ? "\<C-n>\<C-y>" : "<cr>"
+" <CR> selects currently selected item
+" <CR> also selects first item in dropdown if none are selected
+" otherwise <CR> simply acts like <CR> and adds a carriage return
+inoremap <expr> <CR> complete_info()["selected"] != "-1" ? "\<C-y>" : pumvisible() ? "\<C-n>\<C-y>" : "<CR>"
 
 " close preview window when completion done
 autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -285,9 +283,13 @@ set smartcase   " case sensitive search when uppercase present
 
 if executable('rg')
   "use ripgrep for :grep searches
+  "todo use fancy fzf streaming instead
   set grepprg=rg\ --no-heading\ --vimgrep
   set grepformat=%f:%l:%c:%m
 endif
+
+" don't jump to next result when using *, // will access reg with value
+nnoremap * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-m>
 
 " ============================================================================
 " INDENTATION
@@ -349,7 +351,7 @@ augroup CloseLoclistWindowGroup
 augroup END
 
 " quicksave current buffer with double space
-nnoremap <leader><space> :wa<CR>
+noremap <leader><space> :wa<CR>
 
 " ============================================================================
 " EDITING
@@ -372,30 +374,33 @@ set sidescrolloff=20
 " REMAPS - FZF
 " ============================================================================
 " fuzzy search open buffer names
-nnoremap <leader>b :Buffers<CR>
+augroup fzf
+  autocmd!
 
-" fuzzy search file names using current working directory (:PWD)
-nnoremap <leader>f :Files!<CR>
-nnoremap <leader>F :Files<CR>
+  ":buf fuzzy navigation
+  nnoremap <leader>b :Buffers<CR>
 
-" fuzzy search file names using home directory
-nnoremap <leader>r :FilesRoot<CR>
-nnoremap <leader>R :FilesRoot!<CR>
+  " fuzzy search file names using current working directory (:PWD)
+  nnoremap <leader>f :Files!<CR>
+  nnoremap <leader>F :Files<CR>
 
-" fuzzy search text in open buffers
-nnoremap <leader>l :Lines<CR>
+  " fuzzy search text in open buffers
+  nnoremap <leader>l :Lines!<CR>
 
-" fuzzy search text without restarting ripgrep on keystroke using working directory (:PWD)
-nnoremap <leader>p :FuzzyRg!<CR>
-nnoremap <leader>P :FuzzyRg<CR>
+  " fuzzy search text without restarting ripgrep on keystroke using working directory (:PWD)
+  nnoremap <leader>p :Rg!<space>
+  " fuzzy search text without restarting ripgrep on keystroke using working directory (:PWD) and starting with word under cursor
+  nnoremap <leader>P :Rg! <C-r><C-w><CR>
 
-" exact grep style search text by restarting ripgrep on keystroke using working directory (:PWD)"
-nnoremap <leader>g :ExactRg!<CR>
-nnoremap <leader>G :ExactRg<CR>
-
-" fuzzy search for text using current working directory (:PWD) and word under cursor
-" nnoremap <leader>ew :IRgw!<CR>
-" nnoremap <leader>eW :IRgw<CR>
+  " function! s:p(bang, ...)
+  "   let preview_window = get(g:, 'fzf_preview_window', a:bang && &columns >= 80 || &columns >= 120 ? 'right': '')
+  "   if len(preview_window)
+  "     return call('fzf#vim#with_preview', add(copy(a:000), preview_window))
+  "   endif
+  "   return {}
+  " endfunction
+  " command! -bang -nargs=* Rg call fzf#vim#grep('rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1, s:p(<bang>0), <bang>0)
+augroup END
 
 " ============================================================================
 " REMAPS - BUFFERS
@@ -404,14 +409,14 @@ nnoremap <leader>G :ExactRg<CR>
 " easier navigation for buffers
 augroup termIgnore
     autocmd!
-    if has('nvim')
-      autocmd TermOpen * setlocal nobuflisted
-    else
-      autocmd TerminalOpen * setlocal nobuflisted
-    endif
+    " if has('nvim')
+    "   autocmd TermOpen * setlocal nobuflisted
+    " else
+    "   autocmd TerminalOpen * setlocal nobuflisted
+    " endif
     autocmd FileType qf setlocal nobuflisted
 
-    " exit qf with esc
+    " exit qf with q
     autocmd FileType qf nnoremap <buffer> q :q<CR>
 
     " always make quickfix window be on the bottom
@@ -423,17 +428,17 @@ augroup END
 " ============================================================================
 
 " allow double escape to clear highlighting from / (:set hlsearch) (single escape broken in wsl)
-nnoremap <silent> <esc><esc> :nohl<cr>
+nnoremap <silent> <esc><esc> :nohl<CR>
 
 " fix control u and control w during insert mode to start new undo path
 " deletes last line in insert mode
-inoremap <c-u> <c-g>u<c-u>
+inoremap <C-u> <C-g>u<C-u>
 
 " deletes last word in insert mode
-inoremap <c-w> <c-g>u<c-w>
+inoremap <C-w> <C-g>u<C-w>
 
 " make Y behave like C and D
-nnoremap Y y$
+nnoremap Y "+y$
 
 " easier navigation of wrapped lines
 vmap j gj
@@ -445,36 +450,45 @@ nmap k gk
 vnoremap < <gv
 vnoremap > >gv
 
-" don't jump to next match right away
-nnoremap * /\<<C-R>=expand('<cword>')<CR>\><CR>
-
 " paste will not replace register with pasted over text
 xnoremap <expr> p 'pgv"'.v:register.'y`>'
 
+" first remap for <leader>d exits terminal mode
+" second remap for 'esc' exits insert mode
+tnoremap <silent> <leader>d <C-\><C-n>:q!<CR>
+augroup escinterminalbuffers
+  autocmd!
+
+  autocmd TermOpen * tnoremap <buffer> <esc> <C-\><C-n>
+  autocmd FileType fzf tunmap <buffer> <esc>
+augroup END
+
 " vim-tmux-navigator works in terminal mode
-if has('nvim')
-  tnoremap <silent> <esc> <C-\><C-n>:q!<CR>
-  tnoremap <silent> <c-h> <C-\><C-n>:TmuxNavigateLeft<cr>
-  tnoremap <silent> <c-j> <C-\><C-n>:TmuxNavigateDown<cr>
-  tnoremap <silent> <c-k> <C-\><C-n>:TmuxNavigateUp<cr>
-  tnoremap <silent> <c-l> <C-\><C-n>:TmuxNavigateRight<cr>
+if exists(':TmuxNavigateLeft')
+  tnoremap <silent> <C-h> <C-\><C-n>:TmuxNavigateLeft<CR>
+  tnoremap <silent> <C-j> <C-\><C-n>:TmuxNavigateDown<CR>
+  tnoremap <silent> <C-k> <C-\><C-n>:TmuxNavigateUp<CR>
+  tnoremap <silent> <C-l> <C-\><C-n>:TmuxNavigateRight<CR>
 else
-  tnoremap <silent> <esc> <C-W>N
-  tnoremap <silent> <c-h> <C-W>N<esc>:TmuxNavigateLeft<cr>
-  tnoremap <silent> <c-j> <C-W>N<esc>:TmuxNavigateDown<cr>
-  tnoremap <silent> <c-k> <C-W>N<esc>:TmuxNavigateUp<cr>
-  tnoremap <silent> <c-l> <C-W>N<esc>:TmuxNavigateRight<cr>
+  tnoremap <silent> <C-h> <C-\><C-n><C-w><C-h><CR>
+  tnoremap <silent> <C-j> <C-\><C-n><C-w><C-j><CR>
+  tnoremap <silent> <C-k> <C-\><C-n><C-w><C-k><CR>
+  tnoremap <silent> <C-l> <C-\><C-n><C-w><C-l><CR>
 endif
 
+nnoremap <C-j> <C-w><C-j>
+nnoremap <C-k> <C-w><C-k>
+nnoremap <C-l> <C-w><C-l>
+nnoremap <C-h> <C-w><C-h>
 
 " ============================================================================
 " REMAPS - OTHER
 " ============================================================================
 " edit vim config
-nnoremap <leader>vc :e ~/.config/nvim/init.vim<CR>
+noremap <leader>vc :e ~/.config/nvim/init.vim<CR>
 
 " source vim config
-nnoremap <leader>vs :source ~/.config/nvim/init.vim<CR>
+noremap <leader>vs :source ~/.config/nvim/init.vim<CR>
 
 " :W sudo saves the file
 command! W w !sudo tee % > /dev/null
@@ -482,49 +496,19 @@ command! W w !sudo tee % > /dev/null
 " Don't use Ex mode, use Q for formatting.
 map Q gq
 
+augroup filemanager
+  autocmd!
+
+  " open ranger in exact directory of file under cursor
+  " gw goes to cwd
+  nnoremap - :RnvimrToggle<CR>
+  tnoremap - <C-\><C-n>:RnvimrToggle<CR>
+  tnoremap _ <C-\><C-n>:RnvimrResize<CR>
+augroup END
+
 " ============================================================================
 " FUNCTIONS
 " ============================================================================
-
-" true grep searching with automatic refresh as you type
-function! RipgrepFzf(query, fullscreen)
-  let command_fmt = 'rg --line-number --no-heading --color=always --hidden --follow --glob "!{.git,node_modules,.svn,*.sass-cache}" --smart-case %s || true'
-  let initial_command = printf(command_fmt, shellescape(a:query))
-  let reload_command = printf(command_fmt, '{q}')
-  let spec = {'options': ['--phony', '--tiebreak=end', '--height=100%', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec, 'up:60%'), a:fullscreen)
-endfunction
-command! -nargs=* -bang ExactRg call RipgrepFzf(<q-args>, <bang>0)
-
-" fuzzy searching feeds rg into fzf, escape sequence at end for vim in tmux
-command! -bang -nargs=* FuzzyRg
-      \ call fzf#vim#grep(
-      \ 'rg --line-number --no-heading --color=never --smart-case --hidden --follow --glob "!{.git,node_modules,.svn,*.sass-cache}" '.shellescape(<q-args>), 0,
-      \ fzf#vim#with_preview({'options': '--tiebreak=end --height=100%'}, 'up:60%'), <bang>0)
-
-" create my own grep command that feeds the word under the cursor rg into fzf, avoid using --color always for speed, escape sequence at end for vim in tmux
-" command! -bang -nargs=* IRgw
-"       \ call fzf#vim#grep(
-"       \ 'rg --line-number --no-headingi --color=never --smart-case --hidden --follow --glob "!{.git,node_modules,.svn,*.sass-cache,target}" '.shellescape(expand('<cword>')), 0,
-"       \ <bang>0 ? fzf#vim#with_preview({'options': '--tiebreak=end --height=100%'},'up:60%')
-"       \         : fzf#vim#with_preview({'options': '--tiebreak=end'},'right:40%', '?'),
-"       \ <bang>0)
-
-" uses $PWD as 
-" --info=inline 27/500 displays on first line
-" --layout-reverse (top to bottom display)
-" --fzf#vim#with_preview uses bat command for color
-" --tiebreak=end to favor matches towards end of file path
-command! -bang -nargs=? -complete=dir Files
-      \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': '--tiebreak=end --layout=reverse --info=inline --height=100%'}, 'up:60%'), <bang>0)
-
-" uses '~' as base directory for searching
-" --info=inline 27/500 displays on first line
-" --layout-reverse (top to bottom display)
-" --preview uses bat command for color
-" --tiebreak=end to favor matches towards end of file path
-command! -bang -nargs=? FilesRoot
-      \ call fzf#vim#files('~', {'options': ['--tiebreak=end', '--layout=reverse', '--info=inline', '--preview', '~/.config/nvim/plugged/fzf.vim/bin/preview.sh {}']}, <bang>0)
 
 " Zoom / Restore window.
 function! s:ZoomToggle() abort
@@ -552,3 +536,4 @@ lua <<EOF
     }
   }
 EOF
+
