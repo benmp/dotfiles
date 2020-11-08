@@ -596,3 +596,36 @@ function DiffW()
      \ v:fname_in . " " . v:fname_new .  " > " . v:fname_out
 endfunction
 
+" ============================================================================
+" ============================================================================
+if !has('nvim')
+  filetype plugin indent on " turn on filetype analysis allows file specific plugins, indentation, and completion
+  syntax on " allows for coloring based on syntax words
+
+  set autoindent   " copies indentation from previous line
+  set autoread " reread files modified outside of vim, https://unix.stackexchange.com/a/383044
+  set background=dark " tells VIM colorscheme has dark background
+  set backspace=indent,eol,start " allow backspace to go backwards normally
+  set complete-=i " do not scan included files, .tags is more performant
+  set display+=lastline " always show whole last line in document instead of @ symbol
+  set encoding=utf-8 "standard encoding
+  " better looking pipes
+  set fillchars=vert:│,stl:\ ,stlnc:\
+  set history=10000 " undo history, 10000 is max
+  set hlsearch " show highlighed searches by default
+  set incsearch " allow incremental search per letter typed
+  set laststatus=2 " window always has status line
+  set nrformats-=octal " treat leading 007 as not octal numbers for increment <C-a> and decrement <C-x>
+  set ruler " always show cursor position in bottom right, only used when airline is off
+  set sessionoptions-=options "don't store options that will just be set by vimrc anyway
+  set showcmd " show current leader command in bottom right
+  set sidescroll=1 " scroll at least 1 col horizontally
+  set smarttab " let tab behave like >> or <<
+  set ttimeoutlen=50 " wait 50 ms for keycodes
+  set ttyfast " faster redrawing
+  set viminfo+=! " persist upper case variables and marks 'A to viminfo
+  set wildmenu " cmd (:) completion
+  if !exists("g:loaded_matchit") && findfile("plugin/matchit.vim", &runtimepath) ==# ""
+    runtime! macros/matchit.vim " matchit responsible for % matching
+  endif
+endif
