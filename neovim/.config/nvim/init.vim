@@ -18,7 +18,7 @@ endif
 
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'} " autocompletion that I would like to replace with something simpler but works too damn well
+" Plug 'neoclide/coc.nvim', {'branch': 'release'} " autocompletion that I would like to replace with something simpler but works too damn well
 Plug 'editorconfig/editorconfig-vim' " use .editorconfig files per project
 Plug '/usr/local/opt/fzf' " use local fzf installation
 Plug 'junegunn/fzf.vim' " fuzzy finder
@@ -79,7 +79,6 @@ let g:tmux_navigator_save_on_switch = 1
 " vim-windowswap
 let g:windowswap_map_keys = 0 "prevent default bindings
 
-
 " ============================================================================
 " GENERAL NVIM SETTINGS
 " ============================================================================
@@ -118,9 +117,6 @@ set smartcase " case sensitive search when uppercase present
 set splitbelow " default vertical splits to be down
 set splitright " default horizontal splits to be right
 set tabstop=2 " tab counts as x spaces when reading
-" allow colors to work inside tmux
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors " enable 24 bit colors in TUI
 set timeoutlen=1000 " wait 1000 ms for mapping delay
 set title " change window title to always show full file path
@@ -128,7 +124,6 @@ set updatetime=500 " time until swap file writes, additionally how long until Cu
 set wildignore+=*swp,*.class,*.pyc,*.png,*.jpg,*.gif,*.zip " ignore these files
 set wildignore+=*/tmp/*,*.o,*.obj,*.so " Unix
 set wildmode=list:longest,full " bash like behavior
-
 
 " storing here, apparently I had these settings with :set wrap
 " set whichwrap=b,s " allow backspace and space to traverse wrapped lines
@@ -144,14 +139,14 @@ set wildmode=list:longest,full " bash like behavior
 " coc.nvim
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+" function! s:check_back_space() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
 
 " fzf.vim
 ":buf fuzzy navigation
