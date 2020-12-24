@@ -11,7 +11,7 @@ ZSH_DISABLE_COMPFIX=true
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/ben/.config/oh-my-zsh"
+export ZSH="/home/ben/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -163,16 +163,16 @@ pythonpathmac() {
   fi
 }
 
-pathprepend $HOME/.cargo/bin
-pathprepend /usr/local/bin
-pathprepend /usr/local/sbin
-pythonpathmac
+# pathprepend $HOME/.cargo/bin
+# pathprepend /usr/local/bin
+# pathprepend /usr/local/sbin
+# pythonpathmac
 
 # nodejs n to manage environments
 export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
 
 # tmux command will try and attach to existing session first
-alias mux='pgrep -vxq tmux && tmux new -d -s delete-me && tmux run-shell ~/.config/tmux/plugins/tmux-resurrect/scripts/restore.sh && tmux kill-session -t delete-me && tmux attach || tmux attach'
+# alias mux='pgrep -vxq tmux && tmux new -d -s delete-me && tmux run-shell ~/.config/tmux/plugins/tmux-resurrect/scripts/restore.sh && tmux kill-session -t delete-me && tmux attach || tmux attach'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
