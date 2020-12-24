@@ -10,13 +10,14 @@
 " ============================================================================
 " VIM-PLUG
 " ============================================================================
-if empty(glob('~/.config/nvim/autoload/plug.vim'))
-  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs
+set rtp+=~/.local/share/nvim
+if empty(glob('~/.local/share/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/autoload/plug.vim --create-dirs
         \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.config/nvim/plugged')
+call plug#begin('~/.local/share/nvim/plugged')
 
 " Plug 'neoclide/coc.nvim', {'branch': 'release'} " autocompletion that I would like to replace with something simpler but works too damn well
 Plug 'editorconfig/editorconfig-vim' " use .editorconfig files per project
@@ -251,10 +252,10 @@ vnoremap > >gv
 xnoremap <expr> p 'pgv"'.v:register.'y`>'
 
 " edit vim config
-noremap <leader>vc :e ~/.config/nvim/init.vim<CR>
+noremap <leader>vc :e $MYVIMRC<CR>
 
 " source vim config
-noremap <leader>vs :source ~/.config/nvim/init.vim<CR>
+noremap <leader>vs :source $MYVIMRC<CR>
 
 " :W sudo saves the file
 command! W w !sudo tee % > /dev/null
@@ -359,27 +360,30 @@ augroup END
 " ============================================================================
 " FILE SAVING AND READING
 " ============================================================================
-if !isdirectory($HOME.'/.config')
-  call mkdir($HOME.'/.config', '', 0770)
+if !isdirectory($HOME.'/.local')
+  call mkdir($HOME.'/.local', '', 0770)
 endif
-if !isdirectory($HOME.'/.config/nvim')
-  call mkdir($HOME.'/.config/nvim', '', 0770)
+if !isdirectory($HOME.'/.local/share')
+  call mkdir($HOME.'/.local/share', '', 0770)
 endif
-if !isdirectory($HOME.'/.config/nvim/_backup')
-  call mkdir($HOME.'/.config/nvim/_backup', '', 0700)
+if !isdirectory($HOME.'/.local/share/nvim')
+  call mkdir($HOME.'/.local/share/nvim', '', 0770)
 endif
-if !isdirectory($HOME.'/.config/nvim/_swp')
-  call mkdir($HOME.'/.config/nvim/_swp', '', 0700)
+if !isdirectory($HOME.'/.local/share/nvim/_backup')
+  call mkdir($HOME.'/.local/share/nvim/_backup', '', 0700)
 endif
-set backup " put all backup/undo/swap files into ~/.config/nvim
-set backupdir=~/.config/nvim/_backup//
-set directory=~/.config/nvim/_swp//
+if !isdirectory($HOME.'/.local/share/nvim/_swp')
+  call mkdir($HOME.'/.local/share/nvim/_swp', '', 0700)
+endif
+set backup " put all backup/undo/swap files into ~/.local/share/nvim
+set backupdir=~/.local/share/nvim/_backup//
+set directory=~/.local/share/nvim/_swp//
 
 if has('persistent_undo')
-  if !isdirectory($HOME.'/.config/nvim/_undo')
-    call mkdir($HOME.'/.config/nvim/_undo', '', 0700)
+  if !isdirectory($HOME.'/.local/share/nvim/_undo')
+    call mkdir($HOME.'/.local/share/nvim/_undo', '', 0700)
   endif
-  set undodir=~/.config/nvim/_undo
+  set undodir=~/.local/share/nvim/_undo
   set undofile
   set undolevels=1000 "number of changes to store
   set undoreload=10000 "number of lines to undo
