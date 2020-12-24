@@ -209,9 +209,10 @@ nnoremap <leader>ww :call WindowSwap#EasyWindowSwap()<CR>
 " space as leader
 map <space> <leader>
 
-" let vim overwrite/use system clipboard, using clipboard+=unnamedplus started causing crazy lag on dd
-vnoremap y "+y
-nnoremap y "+y
+" let vim overwrite/use system clipboard, using clipboard+=unnamedplus started causing crazy lag on dd in macos
+set clipboard+=unnamedplus
+" vnoremap y "+y
+" nnoremap y "+y
 
 " don't jump to next result when using *, // will access reg with value
 nnoremap * :let @/ = '\<'.expand('<cword>').'\>'\|set hlsearch<C-m>
