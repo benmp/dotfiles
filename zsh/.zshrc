@@ -181,9 +181,5 @@ setxkbmap -option ctrl:nocaps
 # make short-pressed Ctrl behave like Escape:
 xcape -e 'Control_L=Escape'
 
-function stow() {
-	command stow "$1" -t "$HOME" --verbose --no-folding
-}
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
