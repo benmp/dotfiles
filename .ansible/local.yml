@@ -7,12 +7,12 @@
       with_items:
         - htop
         - sway
-        - termite
 
     - name: install aur packages
       aur: name="{{ item }}" state=latest aur_only=yes use=yay
       with_items:
         - neovim-nightly-bin
+        - termite-nocsd
 
     - name: enable and start dhcpcd for network connection
       systemd:
