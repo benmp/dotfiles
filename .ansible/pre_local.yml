@@ -1,0 +1,8 @@
+- hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: aur plugin installation
+    git:
+      repo: 'https://github.com/kewlfft/ansible-aur.git'
+      dest: '~/.ansible/plugins/modules/aur'

@@ -1,0 +1,36 @@
+- hosts: localhost
+  connection: local
+  become: true
+  tasks:
+    - name: install arch packages
+      package: name={{item}}
+      with_items:
+        - htop
+        - sway
+        - alacritty
+
+    - user:
+        name: ansible_aur_user
+        create_home: no
+        group: wheel
+
+    - lineinfile:
+        path: /etc/sudoers.d/11-install-ansible_aur_user
+        line: 'ansible_aur_user ALL=(ALL) NOPASSWD: /usr/bin/pacman'
+        create: yes
+        validate: 'visudo -cf %s'
+
+    - name: install aur packages
+      become: yes
+      become_user: ansible_aur_user
+      aur:
+        aur_only: yes
+        use: yay
+        name:
+          - neovim-nightly-bin
+
+    - name: enable and start dhcpcd for network connection
+      systemd:
+        name: dhcpcd
+        enabled: yes
+        state: started
