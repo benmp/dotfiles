@@ -175,11 +175,5 @@ export N_PREFIX="$HOME/.n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_P
 # tmux command will try and attach to existing session first
 # alias mux='pgrep -vxq tmux && tmux new -d -s delete-me && tmux run-shell ~/.config/tmux/plugins/tmux-resurrect/scripts/restore.sh && tmux kill-session -t delete-me && tmux attach || tmux attach'
 
-# TODO where the heck to I put this so this works on login without having to open a terminal
-# make CapsLock behave like Ctrl:
-setxkbmap -option ctrl:nocaps
-# make short-pressed Ctrl behave like Escape:
-xcape -e 'Control_L=Escape'
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

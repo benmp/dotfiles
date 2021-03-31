@@ -62,7 +62,7 @@ let g:rnvimr_enable_ex = 1
 let g:rnvimr_enable_bw = 1
 let g:rnvimr_enable_picker = 1
 let g:rnvimr_presets = [
-  \ {'width': 0.900, 'height': 0.900},
+  \ {'width': 0.950, 'height': 0.950},
   \ ]
 
 " undotree
