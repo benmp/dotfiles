@@ -2,11 +2,12 @@
   connection: local
   tasks:
     - name: install arch packages
+      become: yes
       package: name={{item}}
       with_items:
         - htop
         - sway
-        - alacritty
+        - termite
 
     - name: install aur packages
       aur: name="{{ item }}" state=latest aur_only=yes use=yay
