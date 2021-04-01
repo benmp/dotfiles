@@ -11,10 +11,10 @@
       become: yes
       package: name={{item}}
       with_items:
-        - bmenu-wlroots
-        - fzf
-        - firefox
+        - bemenu-wlroots
         - chromium
+        - firefox
+        - fzf
         - htop
         - git
         - sway
