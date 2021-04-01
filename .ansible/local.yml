@@ -1,12 +1,23 @@
 - hosts: localhost
   connection: local
   tasks:
+    - name: enable and start dhcpcd for network connection
+      systemd:
+        name: dhcpcd
+        enabled: yes
+        state: started
+
     - name: install arch packages
       become: yes
       package: name={{item}}
       with_items:
+        - fzf
+        - firefox
+        - chromium
         - htop
+        - git
         - sway
+        - zsh
 
     - name: install aur packages
       aur: name="{{ item }}" state=latest aur_only=yes use=yay
@@ -14,8 +25,3 @@
         - neovim-nightly-bin
         - termite-nocsd
 
-    - name: enable and start dhcpcd for network connection
-      systemd:
-        name: dhcpcd
-        enabled: yes
-        state: started
