@@ -11,6 +11,7 @@
       become: yes
       package: name={{item}}
       with_items:
+        - bmenu-wlroots
         - fzf
         - firefox
         - chromium
