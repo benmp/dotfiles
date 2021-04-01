@@ -2,6 +2,7 @@
   connection: local
   tasks:
     - name: enable and start dhcpcd for network connection
+      become: yes
       systemd:
         name: dhcpcd
         enabled: yes
@@ -16,6 +17,7 @@
         - firefox
         - fzf
         - htop
+        - interception-caps2esc
         - git
         - sway
         - zsh
@@ -26,3 +28,20 @@
         - neovim-nightly-bin
         - termite-nocsd
 
+    - name: create caps2esc interception tools file
+      become: yes
+      blockinfile:
+        create: yes
+        path: /etc/interception/udevmon.yaml
+        block: |
+          - JOB: intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE
+            DEVICE:
+              EVENTS:
+                EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
+
+    - name: enable and start udevmon interception for caps2esc
+      become: yes
+      systemd:
+        name: udevmon
+        enabled: yes
+        state: started
