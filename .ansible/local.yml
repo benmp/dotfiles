@@ -12,14 +12,18 @@
       become: yes
       package: name={{item}}
       with_items:
+        - bat
         - bemenu-wlroots
         - chromium
         - firefox
         - fzf
+        - git
         - htop
         - interception-caps2esc
-        - git
+        - openssh
+        - ripgrep
         - sway
+        - wireguard-tools
         - zsh
 
     - name: install aur packages
@@ -27,6 +31,7 @@
       with_items:
         - neovim-nightly-bin
         - termite-nocsd
+        - visual-studio-code-bin
 
     - name: create caps2esc interception tools file
       become: yes
