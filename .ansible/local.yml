@@ -15,6 +15,7 @@
         - bat
         - bemenu-wlroots
         - chromium
+        - curl
         - firefox
         - fzf
         - git
@@ -23,6 +24,7 @@
         - openssh
         - ripgrep
         - sway
+        - wget
         - wireguard-tools
         - zsh
 
@@ -50,3 +52,14 @@
         name: udevmon
         enabled: yes
         state: started
+
+    - name: install n
+      shell: |
+        if ! [ -x "$(command -v n-update)" ]; then
+          curl -L https://git.io/n-install | N_PREFIX=~/.n bash -s -- -y -
+        fi
+
+    - name: install node 10.24.0
+      shell: source ~/.zshrc && n-update -y && n 10.24.0
+      args:
+        executable: /usr/bin/zsh
