@@ -8,6 +8,7 @@ sudo pacman -S --needed git
 
 if [ ! -d "$HOME/.dotfiles" ]; then
   printf '\033[1;34m%s\n' "cloning dotfiles"
+  cd "$HOME"
   printf '%s\n' ".cfg" >> .gitignore
   git clone https://github.com/runbmp/dotfiles.git "$HOME/.dotfiles"
   /usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" config --local status.showUntrackedFiles no
@@ -17,16 +18,21 @@ printf '\033[1;34m%s\n' "checking out and updating dotfiles"
 /usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" checkout master
 /usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" pull
 
+. "$HOME/.zshrc"
+
 arch_packages="\
 base \
 base-devel \
 bat \
 bemenu-wlroots \
+btrfs-progs \
 chromium \
 curl \
+efibootmgr \
 firefox \
 fzf \
 git \
+grub \
 linux \
 linux-firmware \
 linux-lts \
@@ -35,6 +41,7 @@ interception-caps2esc \
 openssh \
 ripgrep \
 sway \
+vi \
 wget \
 wireguard-tools \
 zsh \
