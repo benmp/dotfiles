@@ -32,13 +32,13 @@ efibootmgr \
 firefox \
 fzf \
 git \
-grub \
 linux \
 linux-firmware \
 linux-lts \
 htop \
 interception-caps2esc \
 openssh \
+refind \
 ripgrep \
 sway \
 vi \
