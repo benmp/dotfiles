@@ -15,6 +15,9 @@ ping_gw() {
 }
 ping_gw || ((statusprint "no network, fix first with nmcli or nmtui" "0;31") && exit 1)
 
+statusprint "reflector update for pacman mirrors"
+reflector --verbose --country US --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
 statusprint "upgrading all currently installed arch packages"
 sudo pacman -Syu
 statusprint "installing git for dotfiles grab"
