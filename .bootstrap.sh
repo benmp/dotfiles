@@ -2,13 +2,18 @@
 
 statusprint() {
   printf "\n"
-  printf "\033[${2:-1;34}m**********\033[0m\n"
-  printf "\033[${2:-1;34}m*\033[0m\n"
-  printf "\033[${2:-1;34}m* $1\033[0m\n"
-  printf "\033[${2:-1;34}m*\033[0m\n"
-  printf "\033[${2:-1;34}m**********\033[0m\n"
+  printf "\033[%sm**********\033[0m\n" "${2:-1;34}"
+  printf "\033[%sm*\033[0m\n" "${2:-1;34}"
+  printf "\033[%sm* %s\033[0m\n"  "$1" "${2:-1;34}"
+  printf "\033[%sm*\033[0m\n" "${2:-1;34}"
+  printf "\033[%sm**********\033[0m\n" "${2:-1;34}"
   printf "\n"
 }
+
+ping_gw() { 
+  ping -q -w 1 -c 1 "$(ip r | grep default | cut -d ' ' -f 3)" > /dev/null && return 0 || return 1 
+}
+ping_gw || ((statusprint "no network, fix first with nmcli or nmtui" "0;31") && exit 1)
 
 statusprint "upgrading all currently installed arch packages"
 sudo pacman -Syu
@@ -42,6 +47,7 @@ efibootmgr \
 firefox \
 fzf \
 git \
+inetutils \
 linux \
 linux-firmware \
 linux-lts \
@@ -80,18 +86,17 @@ fi
 statusprint "upgrading all currently installed aur packages"
 yay -Syu --aur
 
-
 statusprint "installing aur_packages: $aur_packages"
 yay -S --needed $(echo "$aur_packages")
 
-udevmon_yaml="\
+statusprint "create caps2esc interception tools file"
+UDEVMON_YAML="\
 - JOB: intercept -g $DEVNODE | caps2esc | uinput -d $DEVNODE
   DEVICE:
     EVENTS:
       EV_KEY: [KEY_CAPSLOCK, KEY_ESC]
 "
-statusprint "create caps2esc interception tools file"
-printf '%s\n' "$udevmon_yaml" | sudo tee /etc/interception/udevmon.yaml
+printf '%s\n' "$UDEVMON_YAML" | sudo tee /etc/interception/udevmon.yaml
 
 statusprint "starting udevmon service"
 sudo systemctl enable --now udevmon
@@ -100,6 +105,20 @@ if ! [ -x "$(command -v n-update)" ]; then
   statusprint "installing n to manage node versions"
   curl -L https://git.io/n-install | N_PREFIX=~/.n bash -s -- -y -
 fi
-
 statusprint "update n and use it to install node 10.24.0"
 . "$HOME/.zshrc" && n-update -y && n 10.24.0
+
+statusprint "setting up refind pacman hook"
+REFIND_HOOK="\
+[Trigger]
+Operation=Upgrade
+Type=Package
+Target=refind
+
+[Action]
+Description = Updating rEFInd on ESP
+When=PostTransaction
+Exec=/usr/bin/refind-install
+"
+printf '%s\n' "$REFIND_HOOK" | sudo tee /etc/pacman.d/hooks/refind.hook
+
