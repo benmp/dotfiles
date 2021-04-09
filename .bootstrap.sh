@@ -58,7 +58,9 @@ htop \
 interception-caps2esc \
 openssh \
 refind \
+reflector \
 ripgrep \
+snapper \
 sway \
 vi \
 wget \
