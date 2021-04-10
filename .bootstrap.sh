@@ -10,37 +10,39 @@ statusprint() {
   printf "\n"
 }
 
+statusprint "enabling NetworkManager.service"
+sudo systemctl enable --now NetworkManager.service
 ping_gw() { 
   ping -q -w 1 -c 1 "$(ip r | grep default | cut -d ' ' -f 3)" > /dev/null && return 0 || return 1 
 }
-ping_gw || ((statusprint "no network, fix first with nmcli or nmtui" "0;31") && exit 1)
-
-statusprint "reflector update for pacman mirrors"
-sudo pacman -S --needed reflector
-reflector --verbose --country US --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+ping_gw || ((statusprint "no network, fix first with nmtui" "0;31") && exit 1)
 
 statusprint "upgrading all currently installed arch packages"
 sudo pacman -Syu
 
+statusprint "reflector update for pacman mirrors"
+sudo pacman -S reflector
+sudo reflector --verbose --country US --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+
 statusprint "installing git for dotfiles grab"
-sudo pacman -S --needed git
+sudo pacman -S git
 
 if [ ! -d "$HOME/.dotfiles" ]; then
   statusprint "cloning dotfiles"
   cd "$HOME"
-  printf '%s\n' ".cfg" >> .gitignore
-  git clone https://github.com/runbmp/dotfiles.git "$HOME/.dotfiles"
-  /usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" config --local status.showUntrackedFiles no
+  printf '%s\n' ".dotfiles" > .gitignore
+  git clone --bare https://github.com/runbmp/dotfiles.git "$HOME/.dotfiles"
 fi
 
 statusprint "checking out and updating dotfiles"
-/usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" checkout master
-/usr/bin/git --git-dir="$HOME/.dotfiles/.git" --work-tree="$HOME" pull
+/usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" checkout
 
 statusprint "source zshrc for environment variables"
 . "$HOME/.zshrc"
 
 arch_packages="\
+amd-ucode \
 base \
 base-devel \
 bat \
@@ -52,28 +54,37 @@ efibootmgr \
 firefox \
 fzf \
 git \
+grub \
 inetutils \
 linux \
 linux-firmware \
 linux-lts \
 htop \
 interception-caps2esc \
+networkmanager \
 openssh \
-refind \
+os-prober \
+powertop \
 reflector \
 ripgrep \
+snap-pac \
 snapper \
 sway \
+tlp \
 vi \
+waybar \
 wget \
 wireguard-tools \
+xf86-video-amdgpu \
 zsh \
 "
 
 aur_packages="\
-neovim-nightly-bin
-termite-nocsd
-visual-studio-code-bin
+neovim-nightly-bin \
+snap-pac-grub \
+termite-nocsd \
+visual-studio-code-bin \
+wev-git \
 "
 
 statusprint "installing arch_packages: $arch_packages"
@@ -94,7 +105,7 @@ statusprint "upgrading all currently installed aur packages"
 yay -Syu --aur
 
 statusprint "installing aur_packages: $aur_packages"
-yay -S --needed $(echo "$aur_packages")
+yay -S $(echo "$aur_packages")
 
 statusprint "create caps2esc interception tools file"
 UDEVMON_YAML="\
@@ -115,17 +126,43 @@ fi
 statusprint "update n and use it to install node 10.24.0"
 . "$HOME/.zshrc" && n-update -y && n 10.24.0
 
-statusprint "setting up refind pacman hook"
-REFIND_HOOK="\
+statusprint "disable internal pc speaker for terrible beep noises"
+echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+
+statusprint "setup snapper, manual snapshots on root only"
+sudo umount /.snapshots
+sudo rm -r /.snapshots
+sudo snapper -c root create-config
+sudo btrfs subvolume delete /.snapshots
+sudo mkdir /.snapshots
+sudo mount -a
+sudo chmod 750 /.snapshots/
+sed -i 's/^ALLOW_USERS=""/ALLOW_USERS="ben"/' /etc/snapper/configs/root
+sed -i 's/^NUMBER_CLEANUP="yes"/NUMBER_CLEANUP="no"/' /etc/snapper/configs/root
+sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
+sed -i 's/^TIMELINE_CLEANUP="yes"/TIMELINE_CLEANUP="no"/' /etc/snapper/configs/root
+
+statusprint "setup boot backup"
+BOOTBACKUP="\
 [Trigger]
-Operation=Upgrade
-Type=Package
-Target=refind
+Operation = Upgrade
+Operation = Install
+Operation = Remove
+Type = Path
+Target = usr/lib/modules/*/vmlinuz
 
 [Action]
-Description = Updating rEFInd on ESP
-When=PostTransaction
-Exec=/usr/bin/refind-install
-"
-printf '%s\n' "$REFIND_HOOK" | sudo tee /etc/pacman.d/hooks/refind.hook
+Depends = rsync
+Description = Backing up /boot...
+When = PreTransaction
+Exec = /usr/bin/rsync -a --delete /boot /.bootbackup"
+sudo cat "$BOOTBACKUP" > /etc/pacman.d/hooks/50-bootbackup.hook
+
+statusprint "enable tlp battery service"
+sudo systemctl enable --now tlp.service
+
+#yay -G light-git
+#nvim light-git/PKGBUILD
+# add --with-udev to ./configure line
+# makepkg -si
 
