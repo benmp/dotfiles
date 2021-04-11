@@ -1,2 +1,0 @@
-export BEMENU_BACKEND=wayland
-export MOZ_ENABLE_WAYLAND=1
