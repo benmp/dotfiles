@@ -56,6 +56,7 @@ fzf \
 git \
 grub \
 inetutils \
+light \
 linux \
 linux-firmware \
 linux-lts \
@@ -161,8 +162,34 @@ sudo cat "$BOOTBACKUP" > /etc/pacman.d/hooks/50-bootbackup.hook
 statusprint "enable tlp battery service"
 sudo systemctl enable --now tlp.service
 
-#yay -G light-git
-#nvim light-git/PKGBUILD
-# add --with-udev to ./configure line
-# makepkg -si
+#TODO zsh stuff?
 
+#TODO ssh keys
+#scp -r ben@192.168.29.207:.ssh .
+
+#TODO wireguard
+#ssh pi@192.168.29.191
+#rm -rf pivpnbackup
+#pivpn -a
+#pivpn -bk
+#exit
+#scp -r pi@192.168.29.191:configs .
+#nmcli connection import type wireguard file configs/b_arch_laptop.conf
+#cat /etc/resolv.conf
+#nmcli connection up b_arch_laptop
+
+#TODO swapfile on btrfs
+#curl https://raw.githubusercontent.com/osandov/osandov-linux/master/scripts/btrfs_map_physical.c -o ~/Downloads/btrfs_map_physical.c
+#cd Downloads
+#gcc -O2 -o btrfs_map_physical btrfs_map_physical.c
+#sudo ./btrfs_map_physical
+#getconf PAGESIZE
+#do first physical / PAGESIZE
+# put in resume and resume_offset into /etc/default/grub and rerun grub install and grub-mkconfig
+# GRUB_CMDLINE_LINUX_DEFAULT="resume=UUID=ceea8bb7-fb93-4ee1-a9c9-0941ed7c7fa4 resume_offset=843879 loglevel=3 quiet"
+
+# FSTAB
+# /dev/nvme0n1p5
+#UUID=ceea8bb7-fb93-4ee1-a9c9-0941ed7c7fa4	/swap     	btrfs     	defaults,noatime,compress=no,subvol=@swap	0 0
+# /swap
+#/swap/swapfile none swap defaults 0 0
