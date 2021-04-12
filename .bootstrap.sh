@@ -51,6 +51,7 @@ btrfs-progs \
 chromium \
 curl \
 efibootmgr \
+fd \
 firefox \
 fzf \
 git \
@@ -77,6 +78,7 @@ waybar \
 wget \
 wireguard-tools \
 xf86-video-amdgpu \
+xorg-xwayland \
 zsh \
 "
 
