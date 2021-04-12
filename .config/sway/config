@@ -255,8 +255,14 @@ bindsym $mod+Up move workspace to output up
 bindsym --locked XF86MonBrightnessUp exec light -T 1.4
 bindsym --locked XF86MonBrightnessDown exec light -T .72
 
+bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+
 output HDMI-A-1 pos 0 0 res 2560x1440@60hz
 output eDP-1 pos 320 1440 res 1920x1080@60hz
+
+exec --no-startup-id 'blueman-applet'
+exec --no-startup-id 'nm-applet --indicator'
 
 bar {
     swaybar_command waybar

@@ -47,6 +47,9 @@ base \
 base-devel \
 bat \
 bemenu-wlroots \
+blueman \
+bluez \
+bluez-utils \
 btrfs-progs \
 chromium \
 curl \
@@ -55,6 +58,7 @@ fd \
 firefox \
 fzf \
 git \
+grim \
 grub \
 inetutils \
 light \
@@ -64,11 +68,15 @@ linux-lts \
 htop \
 interception-caps2esc \
 networkmanager \
+network-manager-applet \
 openssh \
 os-prober \
+pavucontrol \
 powertop \
+pulseaudio \
 reflector \
 ripgrep \
+slurp \
 snap-pac \
 snapper \
 sway \
@@ -77,6 +85,7 @@ vi \
 waybar \
 wget \
 wireguard-tools \
+wl-clipboard \
 xf86-video-amdgpu \
 xorg-xwayland \
 zsh \
@@ -141,9 +150,11 @@ sudo mkdir /.snapshots
 sudo mount -a
 sudo chmod 750 /.snapshots/
 sed -i 's/^ALLOW_USERS=""/ALLOW_USERS="ben"/' /etc/snapper/configs/root
-sed -i 's/^NUMBER_CLEANUP="yes"/NUMBER_CLEANUP="no"/' /etc/snapper/configs/root
+sed -i 's/^NUMBER_CLEANUP="no"/NUMBER_CLEANUP="yes"/' /etc/snapper/configs/root
 sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
 sed -i 's/^TIMELINE_CLEANUP="yes"/TIMELINE_CLEANUP="no"/' /etc/snapper/configs/root
+#TODO remove this if I ever install cron and make sure cron cleanup is running
+sudo systemctl enable --now snapper-cleanup.timer
 
 statusprint "setup boot backup"
 BOOTBACKUP="\
@@ -195,3 +206,24 @@ sudo systemctl enable --now tlp.service
 #UUID=ceea8bb7-fb93-4ee1-a9c9-0941ed7c7fa4	/swap     	btrfs     	defaults,noatime,compress=no,subvol=@swap	0 0
 # /swap
 #/swap/swapfile none swap defaults 0 0
+
+# screen sharing wayland, libpipewire02 only for chromium (slack)
+sudo pacman -S xdg-desktop-portal-wlr libpipewire02 pipewire-media-session pipewire
+
+#bluetooth
+sudo systemctl enable --now bluetooth.service
+# change [General] at top without comemnts to be in /etc/bluetooth/main.conf
+#[General]
+#AutoEnable=true
+
+#TODO sed enable tlp bluetooth on startup
+#TODO 
+#bluetoothctl
+#select default mac address, find somehow
+#power on
+#devices
+#scan on
+#agent on
+#pair tab_complete
+#trust tab_complete
+#connect tab_complete
