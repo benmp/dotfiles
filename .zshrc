@@ -145,7 +145,7 @@ fi
 export FZF_DEFAULT_OPTS='--info=inline --tiebreak=end --border'
 
 # keep vs code extension list up to date asynchronously
-code --list-extensions &> .config/Code/User/vs_code_extensions_list.txt &
+(code --list-extensions &>| "$HOME"/.config/Code/User/vs_code_extensions_list.txt &)
 
 # function to prepend path if not already part of path
 pathprepend () {
