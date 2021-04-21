@@ -41,6 +41,7 @@ statusprint "checking out and updating dotfiles"
 statusprint "source zshrc for environment variables"
 . "$HOME/.zshrc"
 
+#TODO arrange by function
 arch_packages="\
 amd-ucode \
 base \
@@ -51,6 +52,7 @@ blueman \
 bluez \
 bluez-utils \
 btrfs-progs \
+chntpw \
 chromium \
 curl \
 efibootmgr \
@@ -61,19 +63,33 @@ git \
 grim \
 grub \
 inetutils \
+libva-mesa-driver \
+libnotify \
 light \
 linux \
 linux-firmware \
 linux-lts \
 htop \
 interception-caps2esc \
+mako \
+man-db \
+mesa \
+mesa-vdpau \
 networkmanager \
 network-manager-applet \
+noto-fonts \
+noto-fonts-cjk \
+noto-fonts-emoji \
+noto-fonts-extra \
+ntfs-3g \
+openresolv \
 openssh \
 os-prober \
 pavucontrol \
 powertop \
 pulseaudio \
+python \
+python-pip \
 reflector \
 ripgrep \
 slurp \
@@ -86,13 +102,15 @@ waybar \
 wget \
 wireguard-tools \
 wl-clipboard \
-xf86-video-amdgpu \
 xorg-xwayland \
 zsh \
 "
 
 aur_packages="\
+flashfocus-git \
 neovim-nightly-bin \
+nerd-fonts-dejavu-complete \
+networkmanager-wireguard-git \
 snap-pac-grub \
 termite-nocsd \
 visual-studio-code-bin \
@@ -227,3 +245,10 @@ sudo systemctl enable --now bluetooth.service
 #pair tab_complete
 #trust tab_complete
 #connect tab_complete
+
+#fonts, this lets dejavu become preferred mono again (consider using local configuration instead)
+sudo rm /etc/fonts/conf.d/46-noto-sans-mono
+sudo rm /etc/fonts/conf.d/66-noto-sans-mono
+
+#install vs code extensions
+cat ~/.config/Code/User/vs_code_extensions_list.txt | xargs -n 1 code --install-extension

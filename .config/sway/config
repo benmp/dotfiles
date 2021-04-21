@@ -87,10 +87,6 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Moving around:
 #
-    # bindsym $mod+$left exec swaymsg 'border pixel 0' && swaymsg focus left && swaymsg 'border pixel 10'
-    # bindsym $mod+$down exec swaymsg 'border pixel 0' && swaymsg focus down && swaymsg 'border pixel 10'
-    # bindsym $mod+$up exec swaymsg 'border pixel 0' && swaymsg focus up && swaymsg 'border pixel 10'
-    # bindsym $mod+$right exec swaymsg 'border pixel 0' && swaymsg focus right && swaymsg 'border pixel 10'
     # Move your focus around
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
@@ -184,16 +180,16 @@ mode "resize" {
     # right will grow the containers width
     # up will shrink the containers height
     # down will grow the containers height
-    bindsym $left resize shrink width 10px
-    bindsym $down resize grow height 10px
-    bindsym $up resize shrink height 10px
-    bindsym $right resize grow width 10px
+    bindsym $left resize shrink width 30px
+    bindsym $down resize grow height 30px
+    bindsym $up resize shrink height 30px
+    bindsym $right resize grow width 30px
 
     # Ditto, with arrow keys
-    bindsym Left resize shrink width 10px
-    bindsym Down resize grow height 10px
-    bindsym Up resize shrink height 10px
-    bindsym Right resize grow width 10px
+    bindsym Left resize shrink width 30px
+    bindsym Down resize grow height 30px
+    bindsym Up resize shrink height 30px
+    bindsym Right resize grow width 30px
 
     # Return to default mode
     bindsym Return mode "default"
@@ -221,33 +217,45 @@ bindsym $mod+r mode "resize"
 
 
 # gruvbox dark hard colors
-set $base00 #1d2021
-set $base01 #3c3836
-set $base02 #504945
-set $base03 #665c54
-set $base04 #bdae93
-set $base05 #d5c4a1
-set $base06 #ebdbb2
-set $base07 #fbf1c7
-set $base08 #fb4934
-set $base09 #fe8019
-set $base0A #fabd2f
-set $base0B #b8bb26
-set $base0C #8ec07c
-set $base0D #83a598
-set $base0E #d3869b
-set $base0F #d65d0e
+# set $base00 #1d2021
+# set $base01 #3c3836
+# set $base02 #504945
+# set $base03 #665c54
+# set $base04 #bdae93
+# set $base05 #d5c4a1
+# set $base06 #ebdbb2
+# set $base07 #fbf1c7
+# set $base08 #fb4934
+# set $base09 #fe8019
+# set $base0A #fabd2f
+# set $base0B #b8bb26
+# set $base0C #8ec07c
+# set $base0D #83a598
+# set $base0E #d3869b
+# set $base0F #d65d0e
 
 # Basic color configuration using the Base16 variables for windows and borders.
 # Property Name         Border  BG      Text    Indicator Child Border
-client.focused          $base05 $base0D $base00 $base0D $base0C
-client.focused_inactive $base01 $base01 $base05 $base03 $base01
-client.unfocused        $base01 $base00 $base05 $base01 $base01
-client.urgent           $base08 $base08 $base00 $base08 $base08
-client.placeholder      $base00 $base00 $base05 $base00 $base00
-client.background       $base07
+# client.focused          $base05 $base0D $base00 $base0D $base0C
+# client.focused_inactive $base01 $base01 $base05 $base03 $base01
+# client.unfocused        $base01 $base00 $base05 $base01 $base01
+# client.urgent           $base08 $base08 $base00 $base08 $base08
+# client.placeholder      $base00 $base00 $base05 $base00 $base00
+# client.background       $base07
 
-default_border pixel 5
+for_window [app_id="firefox" title="Firefox — Sharing Indicator"] {
+  kill
+}
+
+for_window [title=".*is sharing your screen.*"] {
+  floating enable
+}
+
+for_window [app_id="firefox" instance="personal"] {
+  move to workspace number 10
+}
+
+mouse_warping none
 
 bindsym $mod+Down move workspace to output down
 bindsym $mod+Up move workspace to output up
@@ -257,12 +265,16 @@ bindsym --locked XF86MonBrightnessDown exec light -T .72
 
 bindsym --locked XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym --locked XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym --locked XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym --locked XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
 output HDMI-A-1 pos 0 0 res 2560x1440@60hz
 output eDP-1 pos 320 1440 res 1920x1080@60hz
 
 exec --no-startup-id 'blueman-applet'
 exec --no-startup-id 'nm-applet --indicator'
+exec --no-startup-id mako
+exec_always --no-startup-id flashfocus
 
 bar {
     swaybar_command waybar

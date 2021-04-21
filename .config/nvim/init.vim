@@ -25,8 +25,8 @@ Plug '/usr/local/opt/fzf' " use local fzf installation
 Plug 'junegunn/fzf.vim' " fuzzy finder
 Plug 'gruvbox-community/gruvbox' " colorscheme
 Plug 'junegunn/gv.vim' " git history viewer
-Plug 'kevinhwang91/rnvimr' " ranger file viewer in a popup
 Plug 'mbbill/undotree' " visual undo using vim history
+Plug 'vifm/vifm.vim' "tree viewer
 Plug 'vim-airline/vim-airline' " fancy status line
 Plug 'moll/vim-bbye' " buffer removal while leaving windows in place
 Plug 'tpope/vim-commentary' " better commenting with gc and gcu
@@ -56,14 +56,6 @@ colorscheme gruvbox
 " transparent nvim background
 hi! Normal ctermbg=NONE guibg=NONE
 hi! NonText ctermbg=NONE guibg=NONE guifg=NONE ctermfg=NONE
-
-" rnvimr
-let g:rnvimr_enable_ex = 1
-let g:rnvimr_enable_bw = 1
-let g:rnvimr_enable_picker = 1
-let g:rnvimr_presets = [
-  \ {'width': 0.950, 'height': 0.950},
-  \ ]
 
 " undotree
 let g:undotree_SetFocusWhenToggle = 1
@@ -169,8 +161,13 @@ nnoremap <leader>gl :GV<CR>
 " show history of current buffer
 nnoremap <leader>gv :GV!<CR>
 
-" rnvimr
-nnoremap - :RnvimrToggle<CR>
+" vifm
+let g:loaded_netrw = 1
+let g:loaded_netrwPlugin = 1
+let g:vifm_replace_netrw = 1
+let g:vifm_replace_netrw_cmd = "Vifm"
+nnoremap - :Vifm<CR>
+
 
 " undotree
 nnoremap <leader>u :UndotreeToggle<CR>

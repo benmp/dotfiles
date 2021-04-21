@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
-/usr/bin/firefox -P work --no-remote
+swaymsg workspace 1
+if ! pgrep -f "/usr/lib/firefox/firefox -no-remote -P work"
+then
+  /usr/bin/firefox -no-remote -P work
+fi
