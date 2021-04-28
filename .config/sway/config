@@ -24,7 +24,7 @@ set $menu bemenu-run | xargs swaymsg exec --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
+output * bg /usr/share/backgrounds/sway/astize_cc0_split1.png fill
 #
 # Example configuration:
 #
@@ -251,6 +251,14 @@ for_window [title=".*is sharing your screen.*"] {
   floating enable
 }
 
+for_window [app_id="firefox" instance="work"] {
+  move to workspace number 1
+}
+
+for_window [app_id="firefox" instance="testing"] {
+  move to workspace number 2
+}
+
 for_window [app_id="firefox" instance="personal"] {
   move to workspace number 10
 }
@@ -271,7 +279,6 @@ bindsym --locked XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ to
 output HDMI-A-1 pos 0 0 res 2560x1440@60hz
 output eDP-1 pos 320 1440 res 1920x1080@60hz
 
-exec --no-startup-id 'blueman-applet'
 exec --no-startup-id 'nm-applet --indicator'
 exec --no-startup-id mako
 exec_always --no-startup-id flashfocus

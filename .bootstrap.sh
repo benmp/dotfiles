@@ -17,6 +17,10 @@ ping_gw() {
 }
 ping_gw || ((statusprint "no network, fix first with nmtui" "0;31") && exit 1)
 
+statusprint "enable multilib in pacman"
+sed -i 's/^#[multilib]/[multilib]/' /etc/pacman.conf
+sed -i '/[multilib]/!b;n;cInclude = /etc/pacman.d/mirrorlist' /etc/pacman.conf
+
 statusprint "upgrading all currently installed arch packages"
 sudo pacman -Syu
 
@@ -63,12 +67,16 @@ git \
 grim \
 grub \
 inetutils \
+lib32-mesa \
+lib32-mesa-vdpau \
+lib32-vulkan-radeon \
 libva-mesa-driver \
 libnotify \
 light \
 linux \
 linux-firmware \
 linux-lts \
+lutris \
 htop \
 interception-caps2esc \
 mako \
@@ -85,8 +93,8 @@ ntfs-3g \
 openresolv \
 openssh \
 os-prober \
+p7zip \
 pavucontrol \
-powertop \
 pulseaudio \
 python \
 python-pip \
@@ -98,10 +106,14 @@ snapper \
 sway \
 tlp \
 vi \
+vulkan-icd-loader \
+vulkan-radeon \
 waybar \
 wget \
+wine-staging \
 wireguard-tools \
 wl-clipboard \
+xorg-xeyes \
 xorg-xwayland \
 zsh \
 "
@@ -111,6 +123,7 @@ flashfocus-git \
 neovim-nightly-bin \
 nerd-fonts-dejavu-complete \
 networkmanager-wireguard-git \
+openmw-git \
 snap-pac-grub \
 termite-nocsd \
 visual-studio-code-bin \
@@ -168,11 +181,11 @@ sudo mkdir /.snapshots
 sudo mount -a
 sudo chmod 750 /.snapshots/
 sed -i 's/^ALLOW_USERS=""/ALLOW_USERS="ben"/' /etc/snapper/configs/root
-sed -i 's/^NUMBER_CLEANUP="no"/NUMBER_CLEANUP="yes"/' /etc/snapper/configs/root
+#sed -i 's/^NUMBER_CLEANUP="no"/NUMBER_CLEANUP="yes"/' /etc/snapper/configs/root
 sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/root
 sed -i 's/^TIMELINE_CLEANUP="yes"/TIMELINE_CLEANUP="no"/' /etc/snapper/configs/root
 #TODO remove this if I ever install cron and make sure cron cleanup is running
-sudo systemctl enable --now snapper-cleanup.timer
+#sudo systemctl enable --now snapper-cleanup.timer
 
 statusprint "setup boot backup"
 BOOTBACKUP="\
@@ -226,7 +239,7 @@ sudo systemctl enable --now tlp.service
 #/swap/swapfile none swap defaults 0 0
 
 # screen sharing wayland, libpipewire02 only for chromium (slack)
-sudo pacman -S xdg-desktop-portal-wlr libpipewire02 pipewire-media-session pipewire
+sudo pacman -S xdg-desktop-portal-wlr libpipewire02 pipewire-media-session
 
 #bluetooth
 sudo systemctl enable --now bluetooth.service
@@ -252,3 +265,47 @@ sudo rm /etc/fonts/conf.d/66-noto-sans-mono
 
 #install vs code extensions
 cat ~/.config/Code/User/vs_code_extensions_list.txt | xargs -n 1 code --install-extension
+
+#TODO 50-custom-sleep 1-custom logind
+#[Sleep]
+#AllowSuspend=no
+#AllowHibernation=no
+#AllowSuspendThenHibernate=yes
+#AllowHybridSleep=yes
+#SuspendMode=suspend platform shutdown
+#SuspendState=disk
+#HibernateMode=suspend platform shutdown
+#HibernateState=disk
+##HybridSleepMode=suspend platform shutdown
+##HybridSleepState=disk
+#HibernateDelaySec=15min
+
+#TODO /etc/systemd/logind.conf.d/50-custom.conf
+#[Login]
+##NAutoVTs=6
+##ReserveVT=6
+##KillUserProcesses=no
+##KillOnlyUsers=
+##KillExcludeUsers=root
+##InhibitDelayMaxSec=5
+##UserStopDelaySec=10
+##HandlePowerKey=poweroff
+##HandleSuspendKey=suspend
+##HandleHibernateKey=hibernate
+#HandleLidSwitch=suspend-then-hibernate
+#HandleLidSwitchExternalPower=suspend-then-hibernate
+#HandleLidSwitchDocked=suspend-then-hibernate
+##HandleRebootKey=reboot
+##PowerKeyIgnoreInhibited=no
+##SuspendKeyIgnoreInhibited=no
+##HibernateKeyIgnoreInhibited=no
+##LidSwitchIgnoreInhibited=yes
+##RebootKeyIgnoreInhibited=no
+##HoldoffTimeoutSec=30s
+##IdleAction=ignore
+##IdleActionSec=30min
+##RuntimeDirectorySize=10%
+##RuntimeDirectoryInodes=400k
+##RemoveIPC=yes
+##InhibitorsMax=8192
+##SessionsMax=8192

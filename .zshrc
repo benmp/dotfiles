@@ -158,5 +158,11 @@ export N_PREFIX="$HOME/.n"
 pathprepend "$N_PREFIX"/bin
 pathprepend "$HOME"/.local/bin
 
+export BROWSER=firefox
+
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
+
+alias yay='yay -a'
+
+alias openmw='SDL_VIDEODRIVER=wayland openmw'
 
