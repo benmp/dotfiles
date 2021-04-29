@@ -52,12 +52,12 @@ base \
 base-devel \
 bat \
 bemenu-wlroots \
-blueman \
 bluez \
 bluez-utils \
 btrfs-progs \
 chntpw \
 chromium \
+code \
 curl \
 efibootmgr \
 fd \
@@ -66,31 +66,25 @@ fzf \
 git \
 grim \
 grub \
+grub-btrfs \
 inetutils \
-lib32-mesa \
-lib32-mesa-vdpau \
-lib32-vulkan-radeon \
 libva-mesa-driver \
 libnotify \
 light \
 linux \
 linux-firmware \
 linux-lts \
-lutris \
 htop \
 interception-caps2esc \
 mako \
 man-db \
 mesa \
 mesa-vdpau \
-networkmanager \
-network-manager-applet \
 noto-fonts \
 noto-fonts-cjk \
 noto-fonts-emoji \
 noto-fonts-extra \
 ntfs-3g \
-openresolv \
 openssh \
 os-prober \
 p7zip \
@@ -104,13 +98,11 @@ slurp \
 snap-pac \
 snapper \
 sway \
-tlp \
 vi \
 vulkan-icd-loader \
 vulkan-radeon \
 waybar \
 wget \
-wine-staging \
 wireguard-tools \
 wl-clipboard \
 xorg-xeyes \
@@ -122,33 +114,29 @@ aur_packages="\
 flashfocus-git \
 neovim-nightly-bin \
 nerd-fonts-dejavu-complete \
-networkmanager-wireguard-git \
 openmw-git \
-snap-pac-grub \
-termite-nocsd \
-visual-studio-code-bin \
 wev-git \
 "
 
 statusprint "installing arch_packages: $arch_packages"
 sudo pacman -S --needed $(echo "$arch_packages")
 
-if [ -x "$(command -v yay)" ]; then
-  statusprint "installing yay aur helper"      
-  git clone https://aur.archlinux.org/yay.git
-  cd yay || exit
+if [ -x "$(command -v paru)" ]; then
+  statusprint "installing paru aur helper"      
+  git clone https://aur.archlinux.org/paru.git
+  cd paru || exit
   makepkg -si
   cd ../
-  rm -rf yay
+  rm -rf paru
 else
-  statusprint "yay aur helper already exists"
+  statusprint "paru aur helper already exists"
 fi
 
 statusprint "upgrading all currently installed aur packages"
-yay -Syu --aur
+paru -Syu --aur
 
 statusprint "installing aur_packages: $aur_packages"
-yay -S $(echo "$aur_packages")
+paru -S $(echo "$aur_packages")
 
 statusprint "create caps2esc interception tools file"
 UDEVMON_YAML="\
@@ -186,6 +174,8 @@ sed -i 's/^TIMELINE_CREATE="yes"/TIMELINE_CREATE="no"/' /etc/snapper/configs/roo
 sed -i 's/^TIMELINE_CLEANUP="yes"/TIMELINE_CLEANUP="no"/' /etc/snapper/configs/root
 #TODO remove this if I ever install cron and make sure cron cleanup is running
 #sudo systemctl enable --now snapper-cleanup.timer
+pacman -S grub-btrfs rsync
+systemctl enable --now grub-btrfs.path
 
 statusprint "setup boot backup"
 BOOTBACKUP="\
@@ -193,8 +183,8 @@ BOOTBACKUP="\
 Operation = Upgrade
 Operation = Install
 Operation = Remove
-Type = Path
-Target = usr/lib/modules/*/vmlinuz
+Type = Package
+Target = linux*
 
 [Action]
 Depends = rsync
