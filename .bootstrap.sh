@@ -175,7 +175,7 @@ echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 statusprint "setup snapper, manual snapshots on root only"
 sudo umount /.snapshots
 sudo rm -r /.snapshots
-sudo snapper -c root create-config
+sudo snapper -c root create-config /
 sudo btrfs subvolume delete /.snapshots
 sudo mkdir /.snapshots
 sudo mount -a
