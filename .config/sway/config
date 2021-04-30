@@ -15,7 +15,7 @@ set $down j
 set $up k
 set $right l
 # Your preferred terminal emulator
-set $term termite
+set $term alacritty
 # Your preferred application launcher
 # Note: pass the final command to swaymsg so that the resulting window can be opened
 # on the original workspace that the command was run on.
@@ -24,7 +24,7 @@ set $menu bemenu-run | xargs swaymsg exec --
 ### Output configuration
 #
 # Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
-output * bg /usr/share/backgrounds/sway/astize_cc0_split1.png fill
+output * bg /home/ben/.config/sway/wallpapers/astize_cc0_split1.png fill
 #
 # Example configuration:
 #
@@ -283,8 +283,26 @@ exec --no-startup-id 'nm-applet --indicator'
 exec --no-startup-id mako
 exec_always --no-startup-id flashfocus
 
+#
+# Status Bar:
+#
+# Read `man 5 sway-bar` for more information about this section.
 bar {
-    swaybar_command waybar
+    position top
+
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
 }
+
+#bar {
+#    swaybar_command waybar
+#}
 
 include /etc/sway/config.d/*
