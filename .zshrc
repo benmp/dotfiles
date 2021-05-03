@@ -122,6 +122,7 @@ bindkey -M vicmd 'k' history-substring-search-up
 bindkey -M vicmd 'j' history-substring-search-down
 # }}} End configuration added by Zim install
 
+####CUSTOM###############
 
 # firefox wayland
 export BEMENU_BACKEND=wayland
@@ -129,7 +130,7 @@ export MOZ_ENABLE_WAYLAND=1
 export MOZ_WEBRENDER=1
 
 #xdg-desktop-portal-wlr
-export XDG_CURRENT_DESKTOP=sway
+# export XDG_CURRENT_DESKTOP=sway
 
 #fzf
 [ -f /usr/share/fzf/key-bindings.zsh ] && source /usr/share/fzf/key-bindings.zsh
@@ -162,7 +163,7 @@ export BROWSER=firefox
 
 alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-alias yay='yay -a'
+alias paru='paru -a'
 
 alias openmw='SDL_VIDEODRIVER=wayland openmw'
 

@@ -10,12 +10,21 @@ statusprint() {
   printf "\n"
 }
 
-statusprint "enabling NetworkManager.service"
 sudo systemctl enable --now NetworkManager.service
 ping_gw() { 
   ping -q -w 1 -c 1 "$(ip r | grep default | cut -d ' ' -f 3)" > /dev/null && return 0 || return 1 
 }
 ping_gw || ((statusprint "no network, fix first with nmtui" "0;31") && exit 1)
+
+
+#vi /etc/iwd/main.conf
+#[General]
+#EnableNetworkConfiguration=true
+systemctl enable --now iwd
+systemctl enable --now systemd-resolved.service
+#iwctl
+#TODO commands to connect to wifi
+
 
 statusprint "enable multilib in pacman"
 sed -i 's/^#[multilib]/[multilib]/' /etc/pacman.conf
@@ -57,7 +66,6 @@ bluez-utils \
 btrfs-progs \
 chntpw \
 chromium \
-code \
 curl \
 efibootmgr \
 fd \
@@ -70,7 +78,6 @@ grub-btrfs \
 inetutils \
 libva-mesa-driver \
 libnotify \
-light \
 linux \
 linux-firmware \
 linux-lts \
@@ -89,9 +96,13 @@ openssh \
 os-prober \
 p7zip \
 pavucontrol \
-pulseaudio \
+pipewire \
+pipewire-alsa \
+pipewire-pulse \
 python \
 python-pip \
+python-pynvim
+ranger \
 reflector \
 ripgrep \
 slurp \
@@ -228,11 +239,12 @@ sudo systemctl enable --now tlp.service
 # /swap
 #/swap/swapfile none swap defaults 0 0
 
-# screen sharing wayland, libpipewire02 only for chromium (slack)
-sudo pacman -S xdg-desktop-portal-wlr libpipewire02 pipewire-media-session
+# screen sharing wayland
+sudo pacman -S xdg-desktop-portal-wlr
+# enable chrome://flags/#enable-webrtc-pipewire-capturer
 
 #bluetooth
-sudo systemctl enable --now bluetooth.service
+sudo systemctl enable --now bluetooth
 # change [General] at top without comemnts to be in /etc/bluetooth/main.conf
 #[General]
 #AutoEnable=true
@@ -299,3 +311,7 @@ cat ~/.config/Code/User/vs_code_extensions_list.txt | xargs -n 1 code --install-
 ##RemoveIPC=yes
 ##InhibitorsMax=8192
 ##SessionsMax=8192
+
+#TODO backlight
+#edit /etc/default/grub to have acpi_backlight=native in default command
+#run grub-mkconfig
